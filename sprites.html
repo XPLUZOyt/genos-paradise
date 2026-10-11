@@ -353,7 +353,9 @@ spriteBases.forEach(base => {
 
             variant: v.variant,
 
-            image: "images/placeholder.png"
+            image: `images/${base
+                .toLowerCase()
+                .replace(/\s+/g, "-")}-${v.variant.toLowerCase()}.png`
 
         });
 
@@ -362,14 +364,11 @@ spriteBases.forEach(base => {
 });
 
 defaultSprites.push({
-
     id: spriteId++,
-
     name: "Mega Man",
-
     variant: "Base",
-
-    image: "images/placeholder.png"
+    image: "images/mega-man-base.png"
+});
 
 });
 let sprites =
