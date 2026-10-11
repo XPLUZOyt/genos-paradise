@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sprite Index | Sprite Adventures</title>
+
+<style>
+
+:root{
+    --green:#39ff88;
+    --card:rgba(10,30,18,.75);
+    --border:rgba(57,255,136,.15);
+    --white:#f2fff6;
+    --muted:#91a69a;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Inter,sans-serif;
+    background:#030806;
+    color:var(--white);
+
+    min-height:100vh;
+
+    padding:40px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px;
+    justify-content:center;
+
+    margin-bottom:20px;
+}
+
+input,
+select{
+
+    padding:12px 15px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:var(--card);
+
+    color:white;
+}
+
+.stats{
+    max-width:900px;
+
+    margin:auto;
+
+    margin-bottom:25px;
+}
+
+.progress-track{
+
+    width:100%;
+
+    height:18px;
+
+    border-radius:999px;
+
+    overflow:hidden;
+
+    background:#111;
+}
+
+.progress-fill{
+
+    height:100%;
+
+    width:0%;
+
+    background:
+    linear-gradient(
+    90deg,
+    #39ff88,
+    #a5ff7c
+    );
+
+    transition:.3s;
+}
+
+.percent{
+
+    margin-bottom:10px;
+
+    font-weight:700;
+}
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(
+    auto-fill,
+    minmax(250px,1fr)
+    );
+
+    gap:20px;
+}
+
+.card{
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    transition:.25s;
+}
+
+.card:hover{
+
+    transform:translateY(-5px);
+
+    border-color:var(--green);
+}
+
+.card img{
+
+    width:100%;
+
+    height:220px;
+
+    object-fit:cover;
+
+    background:#111;
+}
+
+.content{
+
+    padding:15px;
+}
+
+.name{
+
+    font-size:1.1rem;
+
+    font-weight:800;
+
+    margin-bottom:10px;
+}
+
+.check{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-top:10px;
+
+    cursor:pointer;
+}
+
+.check input{
+
+    transform:scale(1.15);
+}
+
+.crown{
+
+    color:gold;
+}
+
+.back{
+
+    text-decoration:none;
+
+    color:black;
+
+    background:var(--green);
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    font-weight:700;
+
+    display:inline-block;
+
+    margin-bottom:30px;
+}
+
+</style>
+</head>
+
+<body>
+
+index.html
+⬅ Back To Home
+</a>
+
+<h1>✨ Sprite Collection ✨</h1>
+
+<div class="controls">
+
+<input
+type="text"
+id="search"
+placeholder="Search Sprite">
+
+<select id="filter">
+
+<option value="all">All</option>
+<option value="owned">Owned</option>
+<option value="missing">Missing</option>
+
+</select>
+
+</div>
+
+<div class="stats">
+
+<div id="statsText" class="percent">
+Collection 0/0 (0%)
+</div>
+
+<div class="progress-track">
+<div id="progressFill" class="progress-fill"></div>
+</div>
+
+</div>
+
+<div id="grid" class="grid"></div>
+
+<script>
+
+const defaultSprites = [
+
+{
+    id:1,
+    name:"Jonesy",
+    image:"images/jonesy.png"
+},
+
+{
+    id:2,
+    name:"Gold Jonesy",
+    image:"images/gold-jonesy.png"
+},
+
+{
+    id:3,
+    name:"Loot Hacker Jonesy",
+    image:"images/loot-hacker-jonesy.png"
+},
+
+{
+    id:4,
+    name:"Bounty Hunter Jonesy",
+    image:"images/bounty-hunter-jonesy.png"
+}
+
+];
+
+let sprites =
+JSON.parse(
+localStorage.getItem("spriteCollection")
+)
+||
+defaultSprites.map(sprite=>({
+
+...sprite,
+
+owned:false,
+
+mastered:false
+
+}));
+
+function saveSprites(){
+
+localStorage.setItem(
+"spriteCollection",
+JSON.stringify(sprites)
+);
+
+}
+
+const grid =
+document.getElementById("grid");
+
+const statsText =
+document.getElementById("statsText");
+
+const progressFill =
+document.getElementById("progressFill");
+
+function updateStats(){
+
+const owned =
+sprites.filter(
+s=>s.owned
+).length;
+
+const total =
+sprites.length;
+
+const percent =
+Math.round(
+(owned/total)*100
+);
+
+statsText.textContent =
+`Collection ${owned}/${total} (${percent}%)`;
+
+progressFill.style.width =
+percent + "%";
+
+}
+
+function render(){
+
+const search =
+document
+.getElementById("search")
+.value
+.toLowerCase();
+
+const filter =
+document
+.getElementById("filter")
+.value;
+
+grid.innerHTML="";
+
+sprites
+.filter(sprite=>{
+
+const matchesSearch =
+sprite.name
+.toLowerCase()
+.includes(search);
+
+if(filter==="owned")
+return matchesSearch &&
+sprite.owned;
+
+if(filter==="missing")
+return matchesSearch &&
+!sprite.owned;
+
+return matchesSearch;
+
+})
+
+.forEach(sprite=>{
+
+const card =
+document.createElement("div");
+
+card.className =
+"card";
+
+card.innerHTML =
+
+`
+<img src="${sprite.image}" alt="${sprite.name}">
+
+<div class="content">
+
+<div class="name">
+${sprite.name}
+</div>
+
+<label class="check">
+
+<input
+type="checkbox"
+${sprite.owned ? "checked" : ""}
+onchange="toggleOwned(${sprite.id})">
+
+✅ Owned
+
+</label>
+
+<label class="check">
+
+<input
+type="checkbox"
+${sprite.mastered ? "checked" : ""}
+onchange="toggleMastered(${sprite.id})">
+
+<span class="crown">👑</span>
+
+Mastered
+
+</label>
+
+</div>
+`;
+
+grid.appendChild(card);
+
+});
+
+updateStats();
+
+}
+
+function toggleOwned(id){
+
+const sprite =
+sprites.find(
+s=>s.id===id
+);
+
+sprite.owned =
+!sprite.owned;
+
+saveSprites();
+
+render();
+
+}
+
+function toggleMastered(id){
+
+const sprite =
+sprites.find(
+s=>s.id===id
+);
+
+sprite.mastered =
+!sprite.mastered;
+
+saveSprites();
+
+render();
+
+}
+
+document
+.getElementById("search")
+.addEventListener(
+"input",
+render
+);
+
+document
+.getElementById("filter")
+.addEventListener(
+"change",
+render
+);
+
+render();
+
+</script>
+
+</body>
+</html>
