@@ -379,7 +379,8 @@ JSON.parse(
     )
 );
 
-if(!sprites){
+if(!sprites || sprites.length < defaultSprites.length){
+``
 
     sprites =
     defaultSprites.map(sprite => ({
