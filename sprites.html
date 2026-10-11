@@ -372,19 +372,32 @@ defaultSprites.push({
     image: "images/placeholder.png"
 
 });
+let sprites =
 JSON.parse(
-localStorage.getItem("spriteCollection")
-)
-||
-defaultSprites.map(sprite=>({
+    localStorage.getItem(
+        "spriteCollection"
+    )
+);
 
-...sprite,
+if(!sprites){
 
-owned:false,
+    sprites =
+    defaultSprites.map(sprite => ({
 
-mastered:false
+        ...sprite,
 
-}));
+        owned:false,
+
+        mastered:false
+
+    }));
+
+    localStorage.setItem(
+        "spriteCollection",
+        JSON.stringify(sprites)
+    );
+
+}
 
 function saveSprites(){
 
