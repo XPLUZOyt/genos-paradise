@@ -82,6 +82,16 @@ select{
 }
 
 .progress-fill{
+    .mastered-fill{
+    height:100%;
+    width:0%;
+    background:
+    linear-gradient(
+        90deg,
+        #ffd700,
+        #ff9900
+    );
+    transition
 
     height:100%;
 
@@ -234,12 +244,24 @@ placeholder="Search Sprite">
 
 <div class="stats">
 
-<div id="statsText" class="percent">
-Collection 0/0 (0%)
-</div>
+    <div id="statsText" class="percent">
+        📦 Collection 0/0 (0%)
+    </div>
 
-<div class="progress-track">
-<div id="progressFill" class="progress-fill"></div>
+    <div class="progress-track">
+        <div id="progressFill" class="progress-fill"></div>
+    </div>
+
+    <br>
+
+    <div id="masteredText" class="percent">
+        👑 Mastered 0/0 (0%)
+    </div>
+
+    <div class="progress-track">
+        <div id="masteredFill" class="mastered-fill"></div>
+    </div>
+
 </div>
 
 </div>
@@ -309,26 +331,48 @@ document.getElementById("statsText");
 const progressFill =
 document.getElementById("progressFill");
 
+const masteredText =
+document.getElementById("masteredText");
+
+const masteredFill =
+document.getElementById("masteredFill");
+
 function updateStats(){
 
-const owned =
-sprites.filter(
-s=>s.owned
-).length;
+    const owned =
+    sprites.filter(
+        s => s.owned
+    ).length;
 
-const total =
-sprites.length;
+    const mastered =
+    sprites.filter(
+        s => s.mastered
+    ).length;
 
-const percent =
-Math.round(
-(owned/total)*100
-);
+    const total =
+    sprites.length;
 
-statsText.textContent =
-`Collection ${owned}/${total} (${percent}%)`;
+    const ownedPercent =
+    total > 0
+        ? Math.round((owned / total) * 100)
+        : 0;
 
-progressFill.style.width =
-percent + "%";
+    const masteredPercent =
+    total > 0
+        ? Math.round((mastered / total) * 100)
+        : 0;
+
+    statsText.textContent =
+    `📦 Collection ${owned}/${total} (${ownedPercent}%)`;
+
+    progressFill.style.width =
+    ownedPercent + "%";
+
+    masteredText.textContent =
+    `👑 Mastered ${mastered}/${total} (${masteredPercent}%)`;
+
+    masteredFill.style.width =
+    masteredPercent + "%";
 
 }
 
