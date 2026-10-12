@@ -337,7 +337,26 @@ cursor:pointer;
 <div id="spriteMenu" class="sprite-menu">
     <div class="menu-content">
         <h2>SPRITES</h2>
-        <div id="menuSpriteList"></div>
+
+<button
+id="hideUsedBtn"
+style="
+width:100%;
+margin-bottom:15px;
+padding:10px;
+border:none;
+border-radius:12px;
+background:#2c6f35;
+color:white;
+font-weight:700;
+cursor:pointer;
+"
+onclick="toggleHideUsed()"
+>
+Hide Used: OFF
+</button>
+
+<div id="menuSpriteList"></div>
         <button class="close-btn" onclick="closeMenu()">Close</button>
     </div>
 </div>
@@ -734,6 +753,7 @@ const menuSpriteList=document.getElementById("menuSpriteList");
 JSON.parse(
 localStorage.getItem("usedCodes")
 ) || [];
+    let hideUsed=false;
 
 function saveUsedCodes(){
 localStorage.setItem(
@@ -756,10 +776,34 @@ saveUsedCodes();
 openMenu();
 
 }
+    function toggleHideUsed(){
+
+hideUsed=!hideUsed;
+
+openMenu();
+
+}
 
 menuBtn.addEventListener("click",openMenu);
 
 function openMenu(){
+
+const hideBtn=
+document.getElementById("hideUsedBtn");
+
+if(hideBtn){
+
+hideBtn.textContent=
+hideUsed
+? "Hide Used: ON"
+: "Hide Used: OFF";
+
+hideBtn.style.background=
+hideUsed
+? "#ff5c5c"
+: "#2c6f35";
+
+}
 
 menuSpriteList.innerHTML="";
 
@@ -818,6 +862,13 @@ const codes = [
 menuSpriteList.innerHTML = "";
 
 codes.forEach(item=>{
+
+if(
+hideUsed &&
+usedCodes.includes(item.code)
+){
+return;
+}
 
 const row=document.createElement("div");
 
