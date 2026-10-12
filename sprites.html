@@ -729,7 +729,7 @@ render
     const menuBtn=document.getElementById("menuBtn");
 const spriteMenu=document.getElementById("spriteMenu");
 const menuSpriteList=document.getElementById("menuSpriteList");
-'
+
     let usedCodes=
 JSON.parse(
 localStorage.getItem("usedCodes")
@@ -755,7 +755,7 @@ usedCodes.push(code);
 saveUsedCodes();
 openMenu();
 
-
+}
 
 menuBtn.addEventListener("click",openMenu);
 
