@@ -21,6 +21,27 @@
     padding:0;
     box-sizing:border-box;
 }
+    body,
+.card,
+.menu-content,
+input,
+select,
+.back,
+.theme-toggle,
+.top-menu-btn,
+.reward-badge,
+.used-badge,
+.progress-track,
+.progress-fill,
+.mastered-fill{
+transition:
+background-color .4s ease,
+background .4s ease,
+color .4s ease,
+border-color .4s ease,
+box-shadow .4s ease,
+opacity .4s ease;
+}
 
 body{
     font-family:Inter,sans-serif;
@@ -30,6 +51,10 @@ body{
     min-height:100vh;
 
     padding:40px;
+
+    transition:
+    background-color .5s ease,
+    color .5s ease;
 }
 
 h1{
@@ -328,11 +353,65 @@ border-radius:12px;
 font-weight:700;
 cursor:pointer;
 }
+.theme-toggle{
+position:absolute;
+top:20px;
+right:20px;
+z-index:1002;
+
+padding:12px 18px;
+border:none;
+border-radius:12px;
+
+background:#2b1248;
+color:white;
+
+font-weight:700;
+cursor:pointer;
+}
+
+body.light-mode{
+background:#dff6ff;
+color:#00263d;
+}
+
+body.light-mode .card{
+background:rgba(255,255,255,.9);
+border-color:rgba(0,0,0,.15);
+}
+
+body.light-mode input,
+body.light-mode select{
+background:white;
+color:#00263d;
+}
+
+body.light-mode .menu-content{
+background:linear-gradient(
+180deg,
+#c9f3ff,
+#e8fbff
+);
+color:#00263d;
+}
+
+body.light-mode .back{
+background:#56d9ff;
+color:#00263d;
+}
+
+body.light-mode .theme-toggle{
+background:#56d9ff;
+color:#00263d;
+}
 </style>
 </head>
 
 <body>
     <button id="menuBtn" class="top-menu-btn">🎮 Codes</button>
+    <button id="themeToggle" class="theme-toggle">
+☀️ Light Mode
+</button>
 
 <div id="spriteMenu" class="sprite-menu">
     <div class="menu-content">
@@ -748,6 +827,28 @@ render
     const menuBtn=document.getElementById("menuBtn");
 const spriteMenu=document.getElementById("spriteMenu");
 const menuSpriteList=document.getElementById("menuSpriteList");
+    const themeToggle=
+document.getElementById("themeToggle");
+
+let lightMode=
+localStorage.getItem("lightMode")
+==="true";
+
+if(lightMode){
+
+document.body.classList.add(
+"light-mode"
+);
+
+themeToggle.textContent=
+"🌙 Dark Mode";
+
+}else{
+
+themeToggle.textContent=
+"☀️ Light Mode";
+
+}
 
     let usedCodes=
 JSON.parse(
@@ -963,6 +1064,39 @@ if(e.target===spriteMenu){
 closeMenu();
 }
 });
+    themeToggle.addEventListener(
+"click",
+()=>{
+
+lightMode=!lightMode;
+
+if(lightMode){
+
+document.body.classList.add(
+"light-mode"
+);
+
+themeToggle.textContent=
+"🌙 Dark Mode";
+
+}else{
+
+document.body.classList.remove(
+"light-mode"
+);
+
+themeToggle.textContent=
+"☀️ Light Mode";
+
+}
+
+localStorage.setItem(
+"lightMode",
+lightMode
+);
+
+}
+);
 
 render();
 
