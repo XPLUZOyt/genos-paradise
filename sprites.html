@@ -226,11 +226,118 @@ select{
 
     margin-bottom:30px;
 }
+.top-menu-btn{
+position:fixed;
+top:15px;
+left:50%;
+transform:translateX(-50%);
+z-index:1001;
+background:#182050;
+color:#fff;
+border:1px solid rgba(255,255,255,.15);
+padding:12px 20px;
+border-radius:14px;
+cursor:pointer;
+font-weight:700;
+}
 
+.sprite-menu{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.78);
+backdrop-filter:blur(8px);
+display:none;
+justify-content:center;
+align-items:flex-start;
+overflow:auto;
+z-index:1000;
+padding-top:80px;
+}
+
+.menu-content{
+width:min(900px,95%);
+background:linear-gradient(180deg,#1c2158,#181b26);
+border-radius:20px;
+padding:25px;
+border:1px solid rgba(255,255,255,.1);
+box-shadow:0 0 40px rgba(80,120,255,.25);
+position:relative;
+overflow:hidden;
+}
+
+.menu-content::before{
+content:"";
+position:absolute;
+inset:0;
+background:repeating-linear-gradient(
+0deg,
+transparent,
+transparent 2px,
+rgba(255,255,255,.02) 3px
+);
+pointer-events:none;
+}
+
+.menu-content h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+.menu-sprite{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:16px;
+margin-bottom:12px;
+border-radius:16px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+}
+
+.menu-sprite-name{
+color:#d5d5d5;
+text-decoration:line-through;
+}
+
+.used-badge{
+background:#252535;
+padding:6px 12px;
+border-radius:999px;
+font-size:.8rem;
+font-weight:700;
+}
+
+.reward-badge{
+background:rgba(255,255,255,.12);
+padding:6px 12px;
+border-radius:8px;
+font-size:.85rem;
+}
+
+.close-btn{
+margin-top:20px;
+width:100%;
+border:none;
+padding:12px;
+background:#39ff88;
+color:#000;
+border-radius:12px;
+font-weight:700;
+cursor:pointer;
+}
 </style>
 </head>
 
 <body>
+    <button id="menuBtn" class="top-menu-btn">🎮 Sprite Menu</button>
+
+<div id="spriteMenu" class="sprite-menu">
+    <div class="menu-content">
+        <h2>SPRITES</h2>
+        <div id="menuSpriteList"></div>
+        <button class="close-btn" onclick="closeMenu()">Close</button>
+    </div>
+</div>
 
 <a href="index.html" class="back">
     ⬅ Back To Home
@@ -620,6 +727,57 @@ document
 "change",
 render
 );
+    const menuBtn=document.getElementById("menuBtn");
+const spriteMenu=document.getElementById("spriteMenu");
+const menuSpriteList=document.getElementById("menuSpriteList");
+
+menuBtn.addEventListener("click",openMenu);
+
+function openMenu(){
+
+menuSpriteList.innerHTML="";
+
+sprites.forEach(sprite=>{
+
+const row=document.createElement("div");
+
+row.className="menu-sprite";
+
+row.innerHTML=`
+<div class="menu-sprite-name">
+${sprite.name}
+</div>
+
+<div style="display:flex;gap:10px">
+
+${sprite.owned
+?'<div class="used-badge">Owned</div>'
+:''}
+
+<div class="reward-badge">
+🎁 ${sprite.name} Sprite
+</div>
+
+</div>
+`;
+
+menuSpriteList.appendChild(row);
+
+});
+
+spriteMenu.style.display="flex";
+
+}
+
+function closeMenu(){
+spriteMenu.style.display="none";
+}
+
+spriteMenu.addEventListener("click",e=>{
+if(e.target===spriteMenu){
+closeMenu();
+}
+});
 
 render();
 
