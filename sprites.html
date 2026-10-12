@@ -284,14 +284,17 @@ margin-bottom:20px;
 }
 
 .menu-sprite{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:16px;
-margin-bottom:12px;
-border-radius:16px;
-background:rgba(255,255,255,.04);
+background:rgba(255,255,255,.05);
 border:1px solid rgba(255,255,255,.08);
+border-radius:18px;
+padding:18px;
+margin-bottom:14px;
+transition:.2s;
+}
+
+.menu-sprite:hover{
+border-color:rgba(102,255,102,.5);
+background:rgba(255,255,255,.08);
 }
 
 .menu-sprite-name{
@@ -372,7 +375,6 @@ placeholder="Search Sprite">
         <div id="progressFill" class="progress-fill"></div>
     </div>
 
-    <br>
 
     <div id="masteredText" class="percent">
         👑 Mastered 0/0 (0%)
@@ -381,8 +383,6 @@ placeholder="Search Sprite">
     <div class="progress-track">
         <div id="masteredFill" class="mastered-fill"></div>
     </div>
-
-</div>
 
 </div>
 
@@ -485,7 +485,6 @@ JSON.parse(
 );
 
 if(!sprites || sprites.length < defaultSprites.length){
-``
 
     sprites =
     defaultSprites.map(sprite => ({
@@ -737,28 +736,101 @@ function openMenu(){
 
 menuSpriteList.innerHTML="";
 
-sprites.forEach(sprite=>{
+const codes = [
+{code:"JonesyIsGolden",reward:"Gold Jonesy Sprite"},
+{code:"Born2Play",reward:"Cheat Master Adventure Sprite"},
+{code:"8BitBlast",reward:"Cheat Master 8-Bit Sprite"},
+{code:"GottaGoFast",reward:"Cheat Master Sonic Sprite"},
+{code:"IWannaFlyHigh",reward:"Cheat Master Tails Sprite"},
+{code:"Play4All",reward:"Cheat Master Jonesy Sprite"},
+{code:"GatherAndCraft",reward:"Cheat Master Bush Sprite",note:"Finish the required Wrixel's Get Crafty story quests first"},
+{code:"WeAreTheWorldChampionsToday",reward:"FNCS Sentry BackBling"},
+{code:"9Years",reward:"9th Birthday Sprite Spray"},
+{code:"SAYH12WR1X3L",reward:"Wrixel's Hero Portrait Spray"},
+{code:"YourThoughtsAreMine",reward:"Void Master Geno style + 5,000 Sprite Dust",note:"Progress to the final Geno: The Ultimate Reality story quest, then shoot Geno's shield and let him eliminate you"},
+{code:"BeMoreAlien",reward:"Override Ready Loading Screen"},
+{code:"ReachYourImpossible",reward:"Block Party Loading Screen"},
+{code:"VeryScaryPumpkin",reward:"3 Snack-O'-Lanterns"},
+{code:"IThinkTheKeyFoundMeChat",reward:"1 Extraction Accelerator"},
+{code:"BoneRattler",reward:"4 Spicy Tacos"},
+{code:"WhoCrackedTheCode",reward:"40,000 XP"},
+{code:"DustySprites",reward:"5,000 Sprite Dust"},
+{code:"AlmostScaringSeason",reward:"2 Cheat Code Locators"},
+{code:"PlayToLevelUp",reward:"2,000 Sprite Dust"},
+{code:"ChatFindMeAnotherCode",reward:"2 Cheat Code Locators"},
+{code:"NOCTURNEOP55N1",reward:"2 Extraction Accelerators"},
+{code:"DestinyAwaits",reward:"2 Llama Supply Drops"},
+{code:"BlinkyInkyPinkyClyde",reward:"5,000 Sprite Dust"},
+{code:"BeamMeUp",reward:"2 Extraction Accelerators"},
+{code:"DustInTheWind",reward:"5,000 Sprite Dust"},
+{code:"NoProLlama",reward:"1 Llama Supply Drop"},
+{code:"WhereIsTheDustyTree",reward:"5,000 Sprite Dust"},
+{code:"ChatWhereDoYouFindTheKey",reward:"2 Extraction Accelerators"},
+{code:"InvalidCheat",reward:"2 Cheat Code Locators"},
+{code:"H0p0nVC",reward:"2,000 Sprite Dust"},
+{code:"OverrideXP",reward:"40,000 XP"},
+{code:"Magilume",reward:"2,000 Sprite Dust"},
+{code:"Chispambo",reward:"2,000 Sprite Dust"},
+{code:"Abgestaubt",reward:"2,000 Sprite Dust"},
+{code:"PerlimPinPin",reward:"2,000 Sprite Dust"},
+{code:"SurviveTheNight",reward:"2 Cheat Code Locators"},
+{code:"FindItChat",reward:"2 Cheat Code Locators"},
+{code:"TakeYourHeart",reward:"2 Extraction Accelerators"},
+{code:"PerfectOrder",reward:"4 Spicy Tacos"},
+{code:"O2Override",reward:"1 Llama Supply Drop & 1 Portable Extractor"},
+{code:"CrowsAreAfraid",reward:"Turns you into a Scarecrow"},
+{code:"S7H-50P-R03",reward:"Plays Geno's story quest",note:"Finish the Geno: The Ultimate Reality story quest first"},
+{code:"PumpkinSpiceLife",reward:"Turns you into a Pumpkin"},
+{code:"PowerOut",reward:"FNAF Jumpscare"},
+{code:"BRB",reward:"Turns you into a Toilet"},
+{code:"InsertCoinToContinue",reward:"Turns you into an Arcade Machine"},
+{code:"DontBlockMe",reward:"Turns you into a Tetrimino"},
+{code:"LetsBlockAndRoll",reward:"Turns you into a Tetrimino"}
+];
+
+menuSpriteList.innerHTML = "";
+
+codes.forEach(item=>{
 
 const row=document.createElement("div");
 
 row.className="menu-sprite";
 
 row.innerHTML=`
-<div class="menu-sprite-name">
-${sprite.name}
+
+<div style="display:flex;flex-direction:column;gap:8px;width:100%;">
+
+<div style="display:flex;align-items:center;gap:12px;">
+
+<div style="width:8px;height:8px;background:#66ff66;border-radius:50%;"></div>
+
+<div style="font-family:monospace;font-size:18px;">
+${item.code}
 </div>
 
-<div style="display:flex;gap:10px">
-
-${sprite.owned
-?'<div class="used-badge">Owned</div>'
-:''}
+<div class="used-badge" style="background:#2c6f35;color:#8fff8f;">
+Active
+</div>
 
 <div class="reward-badge">
-🎁 ${sprite.name} Sprite
+🎁 ${item.reward}
 </div>
 
 </div>
+
+${item.note ? `
+<div style="
+margin-left:20px;
+color:#c7c7c7;
+font-size:14px;
+line-height:1.4;
+">
+${item.note}
+</div>
+` : ""}
+
+</div>
+
 `;
 
 menuSpriteList.appendChild(row);
