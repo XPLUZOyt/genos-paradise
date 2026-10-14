@@ -7,6 +7,27 @@
 <title>Sprite Index | XPLUZO's index</title>
 
 <style>
+input,
+select{
+    padding:12px 15px;
+    border:none;
+    border-radius:12px;
+    background:var(--card);
+    color:white;
+}
+.controls button{
+    padding:12px 16px;
+    border:none;
+    border-radius:12px;
+    background:#39ff88;
+    color:#000;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.controls button:hover{
+    opacity:.9;
+}
 
 :root{
     --green:#39ff88;
@@ -461,7 +482,24 @@ placeholder="Search Sprite">
 
 </select>
 
+<button onclick="exportSpriteSheet('missing')">
+❌ Missing
+</button>
+
+<button onclick="exportSpriteSheet('collected')">
+✅ Collected
+</button>
+
+<button onclick="exportSpriteSheet('nonmastered')">
+📦 Non-Mastered
+</button>
+
+<button onclick="exportSpriteSheet('mastered')">
+👑 Mastered
+</button>
+
 </div>
+
 
 <div class="stats">
 
@@ -1097,6 +1135,156 @@ lightMode
 
 }
 );
+async function exportSpriteSheet(type){
+
+    let filteredSprites = [];
+    let title = "";
+    let fileName = "";
+
+    switch(type){
+
+        case "missing":
+            filteredSprites =
+            sprites.filter(s => !s.owned);
+            title = "Missing";
+            fileName = "missing-sprites.png";
+            break;
+
+        case "collected":
+            filteredSprites =
+            sprites.filter(s => s.owned);
+            title = "Collected";
+            fileName = "collected-sprites.png";
+            break;
+
+        case "nonmastered":
+            filteredSprites =
+            sprites.filter(s => !s.mastered);
+            title = "Non-Mastered";
+            fileName = "non-mastered-sprites.png";
+            break;
+
+        case "mastered":
+            filteredSprites =
+            sprites.filter(s => s.mastered);
+            title = "Mastered";
+            fileName = "mastered-sprites.png";
+            break;
+    }
+
+    if(filteredSprites.length === 0){
+        alert("No sprites found.");
+        return;
+    }
+
+    const columns = 5;
+    const imageSize = 180;
+    const padding = 20;
+    const headerHeight = 100;
+
+    const rows =
+    Math.ceil(filteredSprites.length / columns);
+
+    const canvas =
+    document.createElement("canvas");
+
+    canvas.width =
+    columns * (imageSize + padding) + padding;
+
+    canvas.height =
+    headerHeight +
+    rows * (imageSize + 50 + padding);
+
+    const ctx =
+    canvas.getContext("2d");
+
+    ctx.fillStyle = "#111";
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 50px Arial";
+    ctx.textAlign = "center";
+
+    ctx.fillText(
+        title,
+        canvas.width / 2,
+        60
+    );
+
+    const imagePromises =
+    filteredSprites.map(sprite => {
+
+        return new Promise(resolve => {
+
+            const img = new Image();
+
+            img.onload = () =>
+            resolve({sprite,img});
+
+            img.onerror = () =>
+            resolve(null);
+
+            img.src = sprite.image;
+
+        });
+
+    });
+
+    const images =
+    await Promise.all(imagePromises);
+
+    images.forEach((entry,index)=>{
+
+        if(!entry) return;
+
+        const col =
+        index % columns;
+
+        const row =
+        Math.floor(index / columns);
+
+        const x =
+        padding +
+        col * (imageSize + padding);
+
+        const y =
+        headerHeight +
+        row * (imageSize + 50 + padding);
+
+        ctx.drawImage(
+            entry.img,
+            x,
+            y,
+            imageSize,
+            imageSize
+        );
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "16px Arial";
+
+        ctx.fillText(
+            entry.sprite.name,
+            x + imageSize / 2,
+            y + imageSize + 25
+        );
+    });
+
+    const link =
+    document.createElement("a");
+
+    link.download =
+    fileName;
+
+    link.href =
+    canvas.toDataURL("image/png");
+
+    link.click();
+}
 
 render();
 
