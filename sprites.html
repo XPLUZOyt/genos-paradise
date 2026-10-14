@@ -1177,10 +1177,11 @@ async function exportSpriteSheet(type){
         return;
     }
 
-    const columns = 5;
-    const imageSize = 180;
-    const padding = 20;
-    const headerHeight = 100;
+const columns = 14;
+const cardWidth = 120;
+const cardHeight = 140;
+const padding = 8;
+const headerHeight = 120;
 
     const rows =
     Math.ceil(filteredSprites.length / columns);
@@ -1188,33 +1189,71 @@ async function exportSpriteSheet(type){
     const canvas =
     document.createElement("canvas");
 
-    canvas.width =
-    columns * (imageSize + padding) + padding;
+canvas.width =
+(columns * cardWidth) +
+((columns + 1) * padding);
 
-    canvas.height =
-    headerHeight +
-    rows * (imageSize + 50 + padding);
+canvas.height =
+headerHeight +
+(rows * cardHeight) +
+((rows + 1) * padding);
 
     const ctx =
     canvas.getContext("2d");
 
-    ctx.fillStyle = "#111";
-    ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
+const bgGradient =
+ctx.createLinearGradient(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+);
 
-    ctx.fillStyle = "#fff";
-    ctx.font = "bold 50px Arial";
-    ctx.textAlign = "center";
+bgGradient.addColorStop(
+0,
+"#181a2c"
+);
 
-    ctx.fillText(
-        title,
-        canvas.width / 2,
-        60
-    );
+bgGradient.addColorStop(
+1,
+"#0c1218"
+);
+
+ctx.fillStyle =
+bgGradient;
+
+ctx.fillRect(
+0,
+0,
+canvas.width,
+canvas.height
+);
+
+ctx.textAlign = "center";
+
+ctx.fillStyle =
+"#ffffff";
+
+ctx.font =
+"bold 50px Arial";
+
+ctx.fillText(
+title.toUpperCase(),
+canvas.width / 2,
+55
+);
+
+ctx.fillStyle =
+"#39ff88";
+
+ctx.font =
+"bold 24px Arial";
+
+ctx.fillText(
+`${filteredSprites.length} SPRITES`,
+canvas.width / 2,
+95
+);
 
     const imagePromises =
     filteredSprites.map(sprite => {
@@ -1222,6 +1261,7 @@ async function exportSpriteSheet(type){
         return new Promise(resolve => {
 
             const img = new Image();
+            img.crossOrigin = "anonymous";
 
             img.onload = () =>
             resolve({sprite,img});
@@ -1248,30 +1288,75 @@ async function exportSpriteSheet(type){
         const row =
         Math.floor(index / columns);
 
-        const x =
-        padding +
-        col * (imageSize + padding);
+const x =
+padding +
+col * (cardWidth + padding);
 
-        const y =
-        headerHeight +
-        row * (imageSize + 50 + padding);
+const y =
+headerHeight +
+row * (cardHeight + padding);
 
-        ctx.drawImage(
-            entry.img,
-            x,
-            y,
-            imageSize,
-            imageSize
-        );
+       const rarityColors = {
+    Base:"#403b1d",
+    Gold:"#6f5600",
+    Cheat:"#245c11",
+    Hacker:"#3f1761",
+    Hunter:"#17324b",
+    Trick:"#6b3300"
+};
 
-        ctx.fillStyle = "#fff";
-        ctx.font = "16px Arial";
+ctx.fillStyle =
+rarityColors[
+entry.sprite.variant
+] || "#222";
 
-        ctx.fillText(
-            entry.sprite.name,
-            x + imageSize / 2,
-            y + imageSize + 25
-        );
+ctx.fillRect(
+x,
+y,
+cardWidth,
+cardHeight
+);
+
+ctx.strokeStyle =
+"#ffd700";
+
+ctx.lineWidth = 2;
+
+ctx.strokeRect(
+x,
+y,
+cardWidth,
+cardHeight
+);
+
+ctx.drawImage(
+entry.img,
+x + 10,
+y + 8,
+100,
+100
+);
+
+ctx.fillStyle =
+"#fff";
+
+ctx.font =
+"bold 10px Arial";
+
+let label =
+entry.sprite.name;
+
+if(label.length > 16){
+    label =
+    label.substring(0,14)
+    + "..";
+}
+
+ctx.fillText(
+label,
+x + cardWidth / 2,
+y + 125
+);
     });
 
     const link =
