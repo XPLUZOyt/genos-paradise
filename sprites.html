@@ -577,6 +577,14 @@ let spriteId = 1;
 
 const defaultSprites = [];
 
+const quackBases = [
+    "Jonesy",
+    "Adventure",
+    "Bush",
+    "Klombo",
+    "Spooky Dash"
+];
+
 spriteBases.forEach(base => {
 
     variants.forEach(v => {
@@ -596,6 +604,24 @@ spriteBases.forEach(base => {
         });
 
     });
+
+    if (quackBases.includes(base)) {
+
+        defaultSprites.push({
+
+            id: spriteId++,
+
+            name: `Quack ${base}`,
+
+            variant: "Quack",
+
+            image: `images/${base
+                .toLowerCase()
+                .replace(/\s+/g, "-")}-quack.png`
+
+        });
+
+    }
 
 });
 
@@ -744,7 +770,8 @@ Gold:"#ffd700",
 Cheat:"#2fff45",
 Hacker:"#e448ff",
 Hunter:"#39ff88",
-Trick:"#ff9c2b"
+Trick:"#ff9c2b",
+Quack:"#b784ff"
 
 };
 
@@ -1295,7 +1322,8 @@ row * (cardHeight + padding);
     Cheat:"#245c11",
     Hacker:"#3f1761",
     Hunter:"#17324b",
-    Trick:"#6b3300"
+    Trick:"#6b3300",
+    Quack:"#4f2b7a"
 };
 
 ctx.fillStyle =
